@@ -17,12 +17,11 @@ namespace quails
 {
     public class Quail : Unit
     {
-        public float speed;
         public Quail(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
             speed = 2.0f;
         }
-        public override void Update()
+        public override void Update(Vector2 OFFSET)
         {
             if (Globals.keyboard.GetPress("A"))
             {
@@ -46,7 +45,7 @@ namespace quails
             {
                 GameGlobals.PassProjectile(new Fireball(new Vector2(pos.X, pos.Y), this, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y)));
             }
-            base.Update();
+            base.Update(Vector2 OFFSET);
         }
         public override void Draw(Vector2 OFFSET)
         {

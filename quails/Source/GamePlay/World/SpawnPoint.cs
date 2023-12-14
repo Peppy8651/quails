@@ -15,11 +15,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace quails
 {
-    public class Unit : Basic2D
+    public class SpawnPoint : Basic2D
     {
         public bool dead;
-        public float speed, hitDist;
-        public Unit(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
+        public float hitDist;
+        public MyTimer spawnTimer = new MyTimer(2200);
+        public SpawnPoint(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
             dead = false;
             speed = 2.0f;

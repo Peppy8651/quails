@@ -15,24 +15,22 @@ using Microsoft.Xna.Framework.Media;
 
 namespace quails
 {
-    public class Unit : Basic2D
+    public class Mob : Unit
     {
-        public bool dead;
-        public float speed, hitDist;
-        public Unit(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
+        public Mob(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
-            dead = false;
             speed = 2.0f;
-            hitDist = 35.0f;
         }
-        public override void Update(Vector2 OFFSET)
+        public virtual void Update(Vector2 OFFSET, Quail QUAIL)
         {
-            
+            AI(Quail);
+
             base.Update(OFFSET);
         }
-        public virtual void GetHit()
+        public virtual void AI(Quail QUAIL)
         {
-            dead = true;
+            pos += Globals.RadialMovement(QUAIL.pos, pos, speed);
+            rot = Globals.RotateTowards(pos, QUAIL.pos);
         }
         public override void Draw(Vector2 OFFSET)
         {
