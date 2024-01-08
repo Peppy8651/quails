@@ -21,6 +21,8 @@ namespace quails
         public Quail quail;
         public List<Projectile2D> projectiles = new List<Projectile2D>();
         public List<Mob> mobs = new List<Mob>();
+        public List<SpawnPoint> spawnPoints = new List<SpawnPoint>();
+
         public World()
         {
             quail = new Quail("2d/pollo", new Vector2(Globals.screenWidth / 2, Globals.screenHeight / 2), new Vector2(120, 104));
@@ -28,11 +30,20 @@ namespace quails
             GameGlobals.PassProjectile = AddProjectile;
             GameGlobals.PassMob = AddMob;
             offset = new Vector2(0, 0);
+            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(50, 50), new Vector2(128, 128)));
+            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth / 2, 50), new Vector2(128, 128)));
+            spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(1000);
+            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth - 50, 50), new Vector2(128, 128)));
+            spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(2000);
+
         }
         public virtual void Update()
         {
             quail.Update(offset);
-
+            for(int i = 0; i < spawnPoints.Count; i++)
+            {
+                spawnPoints[i].Update(offset);
+            }
             for(int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Update(offset, mobs.ToList<Unit>());
@@ -44,7 +55,7 @@ namespace quails
             }
             for(int i = 0; i < mobs.Count; i++)
             {
-                mobs[i].Update(offset);
+                mobs[i].Update(offset, quail);
                 if (mobs[i].dead)
                 {
                     mobs.RemoveAt(i);
@@ -68,6 +79,10 @@ namespace quails
             for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Draw(offset);
+            }
+            for (int i = 0; i < spawnPoints.Count; i++)
+            {
+                spawnPoints[i].Draw(offset);
             }
             for (int i = 0; i < mobs.Count; i++)
             {

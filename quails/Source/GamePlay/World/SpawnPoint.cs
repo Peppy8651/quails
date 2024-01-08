@@ -23,17 +23,24 @@ namespace quails
         public SpawnPoint(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
             dead = false;
-            speed = 2.0f;
             hitDist = 35.0f;
         }
         public override void Update(Vector2 OFFSET)
         {
-            
+            spawnTimer.UpdateTimer();
+            if (spawnTimer.Test()) {
+                SpawnMob();
+                spawnTimer.ResetToZero();
+            }
             base.Update(OFFSET);
         }
         public virtual void GetHit()
         {
             dead = true;
+        }
+        public virtual void SpawnMob() 
+        {
+            GameGlobals.PassMob(new Imp(new Vector2(pos.X, pos.Y)));
         }
         public override void Draw(Vector2 OFFSET)
         {
