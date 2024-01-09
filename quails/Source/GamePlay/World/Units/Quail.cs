@@ -23,27 +23,36 @@ namespace quails
         }
         public override void Update(Vector2 OFFSET)
         {
+            bool checkScroll = false;
             if (Globals.keyboard.GetPress("A"))
             {
                 pos = new Vector2(pos.X - speed, pos.Y);
+                checkScroll = true;
             }
             if (Globals.keyboard.GetPress("D"))
             {
                 pos = new Vector2(pos.X + speed, pos.Y);
+                checkScroll = true;
             }
             if (Globals.keyboard.GetPress("W"))
             {
                 pos = new Vector2(pos.X, pos.Y - speed);
+                checkScroll = true;
             }
             if (Globals.keyboard.GetPress("S"))
             {
                 pos = new Vector2(pos.X, pos.Y + speed);
+                checkScroll = true;
             }
 
-            rot = Globals.RotateTowards(pos, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y)); //the top of the sprite faces the mouse
+            if (checkScroll)
+            {
+                GameGlobals.CheckScroll(pos);
+            }
+            rot = Globals.RotateTowards(pos, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y) - OFFSET); //the top of the sprite faces the mouse
             if (Globals.mouse.LeftClick())
             {
-                GameGlobals.PassProjectile(new Fireball(new Vector2(pos.X, pos.Y), this, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y)));
+                GameGlobals.PassProjectile(new Fireball(new Vector2(pos.X, pos.Y), this, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y) - OFFSET));
             }
             base.Update(OFFSET);
         }
