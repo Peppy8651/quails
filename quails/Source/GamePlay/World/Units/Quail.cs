@@ -45,7 +45,7 @@ namespace quails
             {
                 GameGlobals.PassProjectile(new Fireball(new Vector2(pos.X, pos.Y), this, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y)));
             }
-            base.Update(Vector2 OFFSET);
+            base.Update(OFFSET);
         }
         public override void Draw(Vector2 OFFSET)
         {

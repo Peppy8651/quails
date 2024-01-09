@@ -23,7 +23,7 @@ namespace quails
         }
         public virtual void Update(Vector2 OFFSET, Quail QUAIL)
         {
-            AI(Quail);
+            AI(QUAIL);
 
             base.Update(OFFSET);
         }

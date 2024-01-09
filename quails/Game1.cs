@@ -10,7 +10,6 @@ namespace quails
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
-        readonly bool test = true;
 
         World world;
 

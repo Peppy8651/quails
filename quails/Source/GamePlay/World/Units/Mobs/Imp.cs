@@ -17,7 +17,7 @@ namespace quails
 {
     public class Imp : Mob
     {
-        public Imp(Vector2 POS) : base("2d/units/mobs/mob", POS, new Vector2(128, 128))
+        public Imp(Vector2 POS) : base("2d/units/mobs/mob", POS, new Vector2(112, 112))
         {
             speed = 2.0f;
         }
