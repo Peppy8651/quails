@@ -46,11 +46,11 @@ namespace quails
         public virtual void Update()
         {
             quail.Update(offset);
-            for(int i = 0; i < spawnPoints.Count; i++)
-            {
-                spawnPoints[i].Update(offset);
-            }
-            for(int i = 0; i < projectiles.Count; i++)
+            //for(int i = 0; i < spawnPoints.Count; i++)
+            // {
+            //    spawnPoints[i].Update(offset);
+            //}
+            for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Update(offset, mobs.ToList<Unit>());
                 if (projectiles[i].done)
@@ -59,7 +59,7 @@ namespace quails
                     i--;
                 }
             }
-            for(int i = 0; i < mobs.Count; i++)
+            for (int i = 0; i < mobs.Count; i++)
             {
                 mobs[i].Update(offset, quail);
                 if (mobs[i].dead)
@@ -69,7 +69,10 @@ namespace quails
                     i--;
                 }
             }
-
+            if (quail.pos.Y > 300)
+            {
+                quail.pos = new Vector2(quail.pos.X, 300);
+            }
             ui.Update(this);
         }
         public virtual void AddMob(object INFO)
@@ -85,19 +88,19 @@ namespace quails
             Vector2 tempPos = (Vector2) INFO;
             if (tempPos.X < -offset.X + (Globals.screenWidth * .4f))
             {
-                offset = new Vector2(offset.X + quail.speed * 2, offset.Y);
+                offset = new Vector2(offset.X + quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
             }
             if (tempPos.X > -offset.X + (Globals.screenWidth * .6f))
             {
-                offset = new Vector2(offset.X - quail.speed * 2, offset.Y);
+                offset = new Vector2(offset.X - quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
             }
             if (tempPos.Y < -offset.Y + (Globals.screenHeight * .4f))
             {
-                offset = new Vector2(offset.X, offset.Y + quail.speed * 2);
+                offset = new Vector2(offset.X, offset.Y + quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
             }
             if (tempPos.Y > -offset.Y + (Globals.screenHeight * .6f))
             {
-                offset = new Vector2(offset.X, offset.Y - quail.speed * 2);
+                offset = new Vector2(offset.X, offset.Y - quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
             }
         }
         public virtual void Draw(Vector2 OFFSET)

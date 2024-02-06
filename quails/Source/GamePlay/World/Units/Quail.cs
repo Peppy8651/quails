@@ -19,41 +19,65 @@ namespace quails
     {
         public Quail(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
-            speed = 2.0f;
+            speed = 0.2f;
+            jumpTimer = new MyTimer(1500);
+            jumpMomentum = 1f;
         }
         public override void Update(Vector2 OFFSET)
         {
             bool checkScroll = false;
             if (Globals.keyboard.GetPress("A"))
             {
-                pos = new Vector2(pos.X - speed, pos.Y);
+                pos = new Vector2(pos.X - speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
             }
             if (Globals.keyboard.GetPress("D"))
             {
-                pos = new Vector2(pos.X + speed, pos.Y);
+                pos = new Vector2(pos.X + speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
             }
-            if (Globals.keyboard.GetPress("W"))
+            //if (Globals.keyboard.GetPress("W"))
+            //{
+            //    pos = new Vector2(pos.X, pos.Y - speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
+            //    checkScroll = true;
+            //}
+            //if (Globals.keyboard.GetPress("S"))
+            //{
+            //    pos = new Vector2(pos.X, pos.Y + speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
+            //    checkScroll = true;
+            //}
+            if (Globals.keyboard.GetPress("Space") && jump == false)
             {
-                pos = new Vector2(pos.X, pos.Y - speed);
-                checkScroll = true;
+                jump = true;
+                jumpMomentum = 40f;
             }
-            if (Globals.keyboard.GetPress("S"))
+            if (jump)
             {
-                pos = new Vector2(pos.X, pos.Y + speed);
+                pos = new Vector2(pos.X, pos.Y - (speed * jumpMomentum));
+                jumpMomentum -= (float) Globals.gameTime.ElapsedGameTime.TotalMilliseconds / 10;
                 checkScroll = true;
             }
 
+            jumpTimer.UpdateTimer();
+            if (jumpTimer.Test())
+            {
+                jump = false;
+                jumpMomentum = 2f;
+                checkScroll = false;
+                jumpTimer.ResetToZero();
+            }
             if (checkScroll)
             {
                 GameGlobals.CheckScroll(pos);
             }
-            rot = Globals.RotateTowards(pos, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y) - OFFSET); //the top of the sprite faces the mouse
+            // rot = Globals.RotateTowards(pos, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y) - OFFSET); the top of the sprite faces the mouse
             if (Globals.mouse.LeftClick())
             {
                 GameGlobals.PassProjectile(new Fireball(new Vector2(pos.X, pos.Y), this, new Vector2(Globals.mouse.newMousePos.X, Globals.mouse.newMousePos.Y) - OFFSET));
             }
+
+
+
             base.Update(OFFSET);
         }
         public override void Draw(Vector2 OFFSET)

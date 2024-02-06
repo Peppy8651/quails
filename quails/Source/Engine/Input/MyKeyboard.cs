@@ -59,6 +59,22 @@ namespace quails
 
             return false;
         }
+        public bool GetPreviousPress(string KEY)
+        {
+
+            for (int i = 0; i < previousPressedKeys.Count; i++)
+            {
+
+                if (previousPressedKeys[i].key == KEY)
+                {
+                    return true;
+                }
+
+            }
+
+
+            return false;
+        }
 
 
         public virtual void GetPressedKeys()

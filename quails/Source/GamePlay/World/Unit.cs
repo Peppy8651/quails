@@ -18,10 +18,13 @@ namespace quails
     public class Unit : Basic2D
     {
         public bool dead;
-        public float speed, hitDist;
+        public bool jump;
+        public MyTimer jumpTimer;
+        public float speed, hitDist, jumpMomentum;
         public Unit(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
             dead = false;
+            jump = false;
             speed = 2.0f;
             hitDist = 35.0f;
         }

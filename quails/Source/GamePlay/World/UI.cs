@@ -20,7 +20,7 @@ namespace quails
         public SpriteFont font;
         public UI()
         {
-            font = Globals.content.Load<SpriteFont>("insert font dir here"));
+            font = Globals.content.Load<SpriteFont>("fonts/font");
 
         }
         public void Update(World WORLD)
@@ -31,7 +31,7 @@ namespace quails
         {
             string tempStr = "Killed = " + WORLD.numKilled;
             Vector2 strDims = font.MeasureString(tempStr);
-            Globals.spriteBatch.DrawString(font, tempStr, new Vector2(Globals.screenWidth / 2 - strDims.X/2, Globals.screenHeight - 40), Color.Black)
+            Globals.spriteBatch.DrawString(font, tempStr, new Vector2(Globals.screenWidth / 2 - strDims.X / 2, Globals.screenHeight - 40), Color.Black);
         }
     }
 }
