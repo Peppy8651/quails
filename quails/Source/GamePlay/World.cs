@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.IO;
 
 namespace quails
 {
@@ -24,11 +25,11 @@ namespace quails
         public List<Projectile2D> projectiles = new List<Projectile2D>();
         public List<Mob> mobs = new List<Mob>();
         public List<SpawnPoint> spawnPoints = new List<SpawnPoint>();
-
+        public BasicLevel currentLevel;
         public World()
         {
             numKilled = 0;
-            quail = new Quail("2d/pollo", new Vector2(Globals.screenWidth / 2, Globals.screenHeight / 2), new Vector2(120, 104));
+            quail = new Quail("2d/pollo", new Vector2(0, 300), new Vector2(120, 104));
 
             GameGlobals.PassProjectile = AddProjectile;
             GameGlobals.PassMob = AddMob;
@@ -37,19 +38,20 @@ namespace quails
             offset = new Vector2(0, 0);
             spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(50, 50), new Vector2(128, 128)));
             spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth / 2, 50), new Vector2(128, 128)));
-            spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(1000);
+             spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(1000);
             spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth - 50, 50), new Vector2(128, 128)));
             spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(2000);
-
             ui = new UI();
+            LoadLevel();
         }
         public virtual void Update()
         {
+            currentLevel.Update(offset);
             quail.Update(offset);
-            //for(int i = 0; i < spawnPoints.Count; i++)
-            // {
-            //    spawnPoints[i].Update(offset);
-            //}
+            for(int i = 0; i < spawnPoints.Count; i++)
+             {
+                spawnPoints[i].Update(offset);
+            }
             for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Update(offset, mobs.ToList<Unit>());
@@ -69,9 +71,17 @@ namespace quails
                     i--;
                 }
             }
-            if (quail.pos.Y > 300)
+            if (quail.pos.Y > 236)
             {
-                quail.pos = new Vector2(quail.pos.X, 300);
+                quail.pos = new Vector2(quail.pos.X, 236);
+            }
+            if (quail.pos.X + (quail.dims.X / 2) > currentLevel.LevelEnd)
+            {
+                quail.pos.X -= quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            if (quail.pos.X + (quail.dims.X / 2 )< currentLevel.LevelStart)
+            {
+                quail.pos.X += quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
             }
             ui.Update(this);
         }
@@ -105,6 +115,7 @@ namespace quails
         }
         public virtual void Draw(Vector2 OFFSET)
         {
+            currentLevel.Draw(offset);
             quail.Draw(offset);
             for (int i = 0; i < projectiles.Count; i++)
             {
@@ -120,6 +131,37 @@ namespace quails
             }
 
             ui.Draw(this);
+        }
+        public virtual void LoadLevel()
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            XElement LevelXML = XElement.Load(currentDirectory + "/Content/2d/level/level.xml");
+            var name = LevelXML.Elements().ElementAt(0);
+            var scale = LevelXML.Elements().ElementAt(1);
+            var color = LevelXML.Elements().ElementAt(2);
+            var start = LevelXML.Elements().ElementAt(3);
+            var end = LevelXML.Elements().ElementAt(4);
+            var floorsList = LevelXML.Elements().ElementAt(5).Elements();
+
+            currentLevel = new BasicLevel
+            {
+                Name = name.Value,
+                Scale = scale.Value,
+                QuailColor = color.Value,
+                LevelStart = float.Parse(start.Value),
+                LevelEnd = float.Parse(end.Value),
+                Floors = new List<Floor>()
+            };
+            for (int i = 0; i < floorsList.Count(); i++)
+            {
+                var thisFloor = floorsList.ElementAt(i).Elements();
+                string thisName = thisFloor.ElementAt(0).Value;
+                Vector2 thisPos = new Vector2(float.Parse(thisFloor.ElementAt(1).FirstAttribute.Value), float.Parse(thisFloor.ElementAt(1).LastAttribute.Value));
+                Vector2 thisDims = new Vector2(float.Parse(thisFloor.ElementAt(2).FirstAttribute.Value), float.Parse(thisFloor.ElementAt(2).LastAttribute.Value));
+                Floor floor = new Floor(thisName, thisPos, thisDims);
+                currentLevel.Floors.Add(floor);
+            }
+            System.Diagnostics.Debug.WriteLine(LevelXML);
         }
     }
 }

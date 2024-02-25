@@ -30,11 +30,13 @@ namespace quails
             {
                 pos = new Vector2(pos.X - speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
+                flip = true;
             }
             if (Globals.keyboard.GetPress("D"))
             {
                 pos = new Vector2(pos.X + speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
+                flip = false;
             }
             //if (Globals.keyboard.GetPress("W"))
             //{

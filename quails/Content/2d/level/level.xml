@@ -1,0 +1,29 @@
+﻿<BasicLevel>
+	<Name>Level</Name>
+	<Scale>1</Scale>
+	<QuailColor>White</QuailColor>
+	<LevelStart>0</LevelStart>
+	<LevelEnd>1000</LevelEnd>
+	<Floors>
+		<Floor>
+			<Name>floor</Name>
+			<Position X="0" Y="300"></Position>
+			<Dimensions Width="256" Height="128"></Dimensions>
+		</Floor>
+		<Floor>
+			<Name>floor</Name>
+			<Position X="200" Y="300"></Position>
+			<Dimensions Width="256" Height="128"></Dimensions>
+		</Floor>
+		<Floor>
+			<Name>floor</Name>
+			<Position X="400" Y="300"></Position>
+			<Dimensions Width="256" Height="128"></Dimensions>
+		</Floor>
+		<Floor>
+			<Name>floor</Name>
+			<Position X="1000" Y="300"></Position>
+			<Dimensions Width="256" Height="128"></Dimensions>
+		</Floor>
+	</Floors>
+</BasicLevel>
