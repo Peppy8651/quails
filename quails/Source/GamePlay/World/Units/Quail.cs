@@ -15,26 +15,30 @@ using Microsoft.Xna.Framework.Media;
 
 namespace quails
 {
+
     public class Quail : Unit
     {
+
+        public bool hitsGround = false;
+        bool checkScroll = false;
+        public MyTimer holdTimer = new MyTimer(1500);
+
         public Quail(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
-            speed = 0.2f;
-            jumpTimer = new MyTimer(1500);
-            jumpMomentum = 1f;
+            speedX = 0.2f;
+            speedY = 0.55f;
         }
         public override void Update(Vector2 OFFSET)
         {
-            bool checkScroll = false;
-            if (Globals.keyboard.GetPress("A"))
+            if (Globals.keyboard.GetPress("A") && jump != JumpType.HOLDING)
             {
-                pos = new Vector2(pos.X - speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
+                pos = new Vector2(pos.X - speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
                 flip = true;
             }
-            if (Globals.keyboard.GetPress("D"))
+            if (Globals.keyboard.GetPress("D") && jump != JumpType.HOLDING)
             {
-                pos = new Vector2(pos.X + speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
+                pos = new Vector2(pos.X + speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, pos.Y);
                 checkScroll = true;
                 flip = false;
             }
@@ -48,26 +52,8 @@ namespace quails
             //    pos = new Vector2(pos.X, pos.Y + speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
             //    checkScroll = true;
             //}
-            if (Globals.keyboard.GetPress("Space") && jump == false)
-            {
-                jump = true;
-                jumpMomentum = 40f;
-            }
-            if (jump)
-            {
-                pos = new Vector2(pos.X, pos.Y - (speed * jumpMomentum));
-                jumpMomentum -= (float) Globals.gameTime.ElapsedGameTime.TotalMilliseconds / 10;
-                checkScroll = true;
-            }
+            checkJump();
 
-            jumpTimer.UpdateTimer();
-            if (jumpTimer.Test())
-            {
-                jump = false;
-                jumpMomentum = 2f;
-                checkScroll = false;
-                jumpTimer.ResetToZero();
-            }
             if (checkScroll)
             {
                 GameGlobals.CheckScroll(pos);
@@ -81,6 +67,59 @@ namespace quails
 
 
             base.Update(OFFSET);
+        }
+        public virtual void checkJump()
+        {
+            if (Globals.keyboard.GetPress("Space") && Globals.keyboard.GetPress("S") && jump != JumpType.NORMAL && jump != JumpType.HOLD)
+            {
+                if (!Globals.keyboard.GetPress("A") && !Globals.keyboard.GetPress("D")) // hold jump
+                {
+                    if (holdTimer.Test()) // after being held for 1.5 seconds
+                    {
+                        holdTimer.ResetToZero();
+                        jump = JumpType.HOLD;
+                        speedY = 0.75f;
+                        speedX = 0.1f;
+                        hitsGround = false;
+                    }
+                    else // in process, update timer
+                    {
+                        jump = JumpType.HOLDING;
+                        holdTimer.UpdateTimer();
+                    }
+                }
+            }
+            else if (jump == JumpType.HOLDING) // stop holding space
+            {
+                jump = JumpType.NONE;
+                holdTimer.ResetToZero();
+
+            }
+            if (Globals.keyboard.GetPress("Space") && jump == JumpType.NONE)
+            {
+                    jump = JumpType.NORMAL;
+                    hitsGround = false;
+            }
+            if (jump == JumpType.HOLD)
+            {
+                pos = new Vector2(pos.X, pos.Y - (speedY * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds));
+                checkScroll = true;
+                speedY -= 0.00095f * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            else if (jump == JumpType.NORMAL)
+            {
+                pos = new Vector2(pos.X, pos.Y - (speedY * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds));
+                checkScroll = true;
+                speedY -= 0.0009f * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+
+            if (hitsGround)
+            {
+                jump = JumpType.NONE;
+                speedY = 0.55f;
+                speedX = 0.2f;
+                checkScroll = false;
+            }
         }
         public override void Draw(Vector2 OFFSET)
         {

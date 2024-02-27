@@ -19,7 +19,7 @@ namespace quails
     {
         public Mob(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
-            speed = 2.0f;
+            speedX = 2.0f;
         }
         public virtual void Update(Vector2 OFFSET, Quail QUAIL)
         {
@@ -29,7 +29,7 @@ namespace quails
         }
         public virtual void AI(Quail QUAIL)
         {
-            pos += Globals.RadialMovement(QUAIL.pos, pos, speed);
+            pos += Globals.RadialMovement(QUAIL.pos, pos, speedX);
             rot = Globals.RotateTowards(pos, QUAIL.pos);
         }
         public override void Draw(Vector2 OFFSET)

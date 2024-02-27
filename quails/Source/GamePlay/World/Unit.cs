@@ -15,17 +15,24 @@ using Microsoft.Xna.Framework.Media;
 
 namespace quails
 {
+    public enum JumpType
+    {
+        NORMAL,
+        HOLD,
+        HOLDING,
+        NONE
+    }
     public class Unit : Basic2D
     {
         public bool dead;
-        public bool jump;
+        public JumpType jump;
         public MyTimer jumpTimer;
-        public float speed, hitDist, jumpMomentum;
+        public float speedX, hitDist, speedY;
         public Unit(string PATH, Vector2 POS, Vector2 DIMS) : base(PATH, POS, DIMS)
         {
             dead = false;
-            jump = false;
-            speed = 2.0f;
+            jump = JumpType.NONE;
+            speedX = 2.0f;
             hitDist = 35.0f;
         }
         public override void Update(Vector2 OFFSET)

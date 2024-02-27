@@ -36,11 +36,11 @@ namespace quails
             GameGlobals.CheckScroll = CheckScroll;
 
             offset = new Vector2(0, 0);
-            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(50, 50), new Vector2(128, 128)));
-            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth / 2, 50), new Vector2(128, 128)));
-             spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(1000);
-            spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth - 50, 50), new Vector2(128, 128)));
-            spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(2000);
+            //spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(50, 50), new Vector2(128, 128)));
+            //spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth / 2, 50), new Vector2(128, 128)));
+             //spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(1000);
+           // spawnPoints.Add(new SpawnPoint("2d/misc/idk", new Vector2(Globals.screenWidth - 50, 50), new Vector2(128, 128)));
+           // spawnPoints[spawnPoints.Count - 1].spawnTimer.AddToTimer(2000);
             ui = new UI();
             LoadLevel();
         }
@@ -73,15 +73,20 @@ namespace quails
             }
             if (quail.pos.Y > 236)
             {
-                quail.pos = new Vector2(quail.pos.X, 236);
+                quail.pos = new Vector2(quail.pos.X, 236.5f);
+                if (quail.speedY < 0 && quail.jump != JumpType.NONE)
+                {
+                    quail.hitsGround = true;
+                    quail.speedY = 0;
+                }
             }
             if (quail.pos.X + (quail.dims.X / 2) > currentLevel.LevelEnd)
             {
-                quail.pos.X -= quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
+                quail.pos.X -= quail.speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
             }
             if (quail.pos.X + (quail.dims.X / 2 )< currentLevel.LevelStart)
             {
-                quail.pos.X += quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
+                quail.pos.X += quail.speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds;
             }
             ui.Update(this);
         }
@@ -98,25 +103,24 @@ namespace quails
             Vector2 tempPos = (Vector2) INFO;
             if (tempPos.X < -offset.X + (Globals.screenWidth * .4f))
             {
-                offset = new Vector2(offset.X + quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
+                offset = new Vector2(offset.X + quail.speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
             }
             if (tempPos.X > -offset.X + (Globals.screenWidth * .6f))
             {
-                offset = new Vector2(offset.X - quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
+                offset = new Vector2(offset.X - quail.speedX * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds, offset.Y);
             }
             if (tempPos.Y < -offset.Y + (Globals.screenHeight * .4f))
             {
-                offset = new Vector2(offset.X, offset.Y + quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
+                offset = new Vector2(offset.X, offset.Y + quail.speedY * 0.4f * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
             }
             if (tempPos.Y > -offset.Y + (Globals.screenHeight * .6f))
             {
-                offset = new Vector2(offset.X, offset.Y - quail.speed * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
+                offset = new Vector2(offset.X, offset.Y - quail.speedY * 2 * (float)Globals.gameTime.ElapsedGameTime.TotalMilliseconds);
             }
         }
         public virtual void Draw(Vector2 OFFSET)
         {
             currentLevel.Draw(offset);
-            quail.Draw(offset);
             for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Draw(offset);
@@ -129,7 +133,7 @@ namespace quails
             {
                 mobs[i].Draw(offset);
             }
-
+            quail.Draw(offset);
             ui.Draw(this);
         }
         public virtual void LoadLevel()

@@ -19,7 +19,7 @@ namespace quails
     {
         public Imp(Vector2 POS) : base("2d/units/mobs/mob", POS, new Vector2(112, 112))
         {
-            speed = 2.0f;
+            speedX = 2.0f;
         }
         public override void Update(Vector2 OFFSET, Quail QUAIL)
         {
